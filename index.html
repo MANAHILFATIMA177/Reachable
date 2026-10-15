@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reachable · accessibility workshop</title>
+<meta name="description" content="Hands-on lab for keyboard, ARIA, contrast, zoom and WCAG 2.2 AA remediation.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2712%27 fill=%27none%27 stroke=%27%23005fcc%27 stroke-width=%274%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="shell">
+<aside class="side">
+ <div class="brand"><span class="logo" aria-hidden="true">◐</span><div><strong>Reachable</strong><small>Accessibility workshop</small></div></div>
+ <nav aria-label="Lab modules"><ul id="nav">
+  <li><a href="#keyboard">Keyboard and ARIA</a></li>
+  <li><a href="#contrast">Contrast and zoom</a></li>
+  <li><a href="#fix">Fix the UI</a></li>
+  <li><a href="#quiz">Quick quiz</a></li>
+  <li><a href="#audit">Audit report</a></li>
+  <li><a href="#results">My results</a></li>
+ </ul></nav>
+ <div class="themebox"><label for="theme">Theme</label>
+  <select id="theme"><option value="light">Light</option><option value="dark">Dark</option><option value="contrast">High contrast</option></select></div>
+</aside>
+<main id="main" tabindex="-1">
+
+<section id="keyboard" data-mod hidden>
+ <h2 tabindex="-1">Keyboard and screen reader lab</h2>
+ <p class="lead">Put the mouse away. Every widget below uses native HTML first and adds ARIA only where HTML has no equivalent.</p>
+ <div class="grid">
+ <div class="card"><h3>Disclosure</h3><p><strong>Try:</strong> Enter or Space on a summary. Native <code>details</code> needs no ARIA.</p>
+  <details><summary>What is a focus indicator?</summary><p>The outline showing where keyboard focus is (SC 2.4.7).</p></details>
+  <details><summary>Why use a real button?</summary><p>It gets focus, Enter, Space and a role for free (SC 2.1.1, 4.1.2).</p></details></div>
+ <div class="card"><h3>Modal dialog</h3><p><strong>Try:</strong> open, press Tab, then Esc. Focus should return to the opener.</p>
+  <button class="btn" id="openDlg">Open dialog</button>
+  <dialog id="dlg" aria-labelledby="dt" aria-describedby="dd"><h4 id="dt">Confirm</h4><p id="dd">Focus stays inside until you close this.</p><button class="btn" id="closeDlg">Close</button> <button id="other">Another control</button></dialog></div>
+ <div class="card"><h3>Menu button</h3><p><strong>Try:</strong> Enter or Down opens; Up, Down, Home, End move; Esc closes.</p>
+  <div class="menuwrap"><button id="menubtn" aria-haspopup="menu" aria-expanded="false" aria-controls="menulist">Actions</button>
+  <div id="menulist" class="menu" role="menu" aria-labelledby="menubtn" hidden><button role="menuitem" tabindex="-1">Copy</button><button role="menuitem" tabindex="-1">Rename</button><button role="menuitem" tabindex="-1">Delete</button></div></div></div>
+ <div class="card"><h3>Form validation</h3><p><strong>Try:</strong> submit empty. Focus jumps to the error summary.</p>
+  <div id="esum" class="err" tabindex="-1" hidden></div>
+  <form id="frm" novalidate>
+   <div class="field"><label for="fname">Name (required)</label><input id="fname" type="text" aria-required="true" aria-describedby="fname-err" autocomplete="name"><div id="fname-err" class="err"></div></div>
+   <div class="field"><label for="femail">Email (required)</label><input id="femail" type="email" aria-required="true" aria-describedby="femail-err" autocomplete="email"><div id="femail-err" class="err"></div></div>
+   <button class="btn" type="submit">Send</button></form></div>
+ </div>
+ <div class="card"><h3>Key log</h3><p>Shows each key and the focused element, to check focus order (SC 2.4.3).</p><ol id="klog" class="klog" aria-label="Recent key events"></ol></div>
+</section>
+
+<section id="contrast" data-mod hidden>
+ <h2 tabindex="-1">Contrast and magnification</h2>
+ <div class="card"><h3>Contrast checker</h3>
+  <div class="row">
+   <div class="field"><label for="fgc">Text color</label><input type="color" id="fgc" value="#767676"> <input type="text" id="fgh" value="#767676" aria-label="Text color hex" size="8"></div>
+   <div class="field"><label for="bgc">Background color</label><input type="color" id="bgc" value="#ffffff"> <input type="text" id="bgh" value="#ffffff" aria-label="Background color hex" size="8"></div>
+   <button id="swap" type="button">Swap colors</button></div>
+  <p class="big"><strong><span id="ratio"></span>:1</strong> contrast (rounded down, never up)</p>
+  <ul id="results" class="plain"></ul>
+  <div class="pv" id="pv"><p style="margin:0;font-size:1rem">Normal text sample</p><p style="margin:0;font-size:1.5rem">Large text sample (24px)</p><p style="margin:0;font-size:1.167rem;font-weight:700">Large bold sample (18.66px bold)</p></div>
+  <button id="sugg" type="button">Suggest a passing text color</button> <span id="sugout" role="status"></span></div>
+ <div class="card"><h3>Zoom, reflow and color vision</h3>
+  <div class="row">
+   <div class="field"><label for="ver">Sample</label><select id="ver"><option value="g">After (fixed)</option><option value="b">Before (broken)</option></select></div>
+   <div class="field"><label for="zoom">Text size <output id="zo">100%</output></label><input type="range" id="zoom" min="100" max="400" step="25" value="100"></div>
+   <div class="field"><label for="cb">Color vision</label><select id="cb"><option value="">Normal</option><option value="pro">Protanopia</option><option value="deu">Deuteranopia</option><option value="tri">Tritanopia</option><option value="ach">Achromatopsia</option></select></div></div>
+  <div class="row"><label><input type="checkbox" id="rf"> Reflow at 320px (SC 1.4.10)</label><label><input type="checkbox" id="sp"> Text spacing (SC 1.4.12)</label></div>
+  <p id="mres" role="status"></p>
+  <div class="wrap"><div id="stage"></div></div>
+  <p class="note">A simulation only. Also test with browser zoom, the OS magnifier and a real screen reader.</p></div>
+</section>
+
+<section id="fix" data-mod hidden>
+ <h2 tabindex="-1">Fix the UI</h2>
+ <fieldset class="seg"><legend>View</legend>
+  <label><input type="radio" name="view" value="b" checked> Before</label>
+  <label><input type="radio" name="view" value="a"> After</label>
+  <label><input type="radio" name="view" value="s"> Side by side</label></fieldset>
+ <div class="row top"><div id="wb" class="wrap grow"></div><div id="wa" class="wrap grow" hidden></div></div>
+ <p id="prog" role="status"></p><progress id="pbar" max="20" value="0" aria-label="Issues found"></progress>
+ <div class="row"><button id="rst" type="button">Reset progress</button></div>
+ <h3>Issue tracker</h3><div id="issues"></div>
+</section>
+
+<section id="audit" data-mod hidden>
+ <h2 tabindex="-1">Audit report</h2>
+ <div class="card"><p>Rate each criterion, then generate a report. Ratings are saved in this browser. Automated tools catch only part of WCAG, so combine axe, Lighthouse or WAVE with keyboard and screen reader testing.</p></div>
+ <div class="card"><div class="field"><label for="target">Site or page audited</label><input type="text" id="target" style="width:100%" placeholder="https://example.com/checkout" autocomplete="off"></div></div>
+ <div id="chk"></div>
+ <div class="row noprint"><button class="btn" id="gen">Generate report</button><button id="cpy">Copy</button><button id="dl">Download .md</button><button id="prt">Print</button></div>
+ <pre id="rep" tabindex="-1">Choose Generate report to build a summary.</pre>
+</section>
+<section id="results" data-mod hidden>
+ <h2 tabindex="-1">My results</h2>
+ <p class="lead">Finish the workshop here. Add your name and one takeaway, then copy or download this summary and send it to your facilitator.</p>
+ <div class="card">
+  <div class="field"><label for="rname">Your name</label><input type="text" id="rname" style="width:100%" autocomplete="name"></div>
+  <div class="field"><label for="rnote">One thing you will do differently on your next project</label><textarea id="rnote" rows="3" style="width:100%"></textarea></div>
+ </div>
+ <pre id="rtext" tabindex="-1"></pre>
+ <div class="row noprint"><button class="btn" id="rcopy" type="button">Copy summary</button><button id="rdl" type="button">Download .md</button><button id="rprt" type="button">Print</button></div>
+ <p id="rmsg" role="status"></p>
+</section>
+<section id="quiz" data-mod hidden>
+ <h2 tabindex="-1">Quick quiz</h2>
+ <p class="lead">Six questions on what you practiced. Answers are explained after you check.</p>
+ <form id="quizForm" novalidate></form>
+ <div class="row"><button class="btn" id="qcheck" type="button">Check answers</button><button id="qreset" type="button">Reset</button></div>
+ <p id="qres" class="big" role="status"></p>
+</section>
+</main>
+</div>
+<p id="live" class="sr" role="status"></p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="pro"><feColorMatrix type="matrix" values="0.567 0.433 0 0 0 0.558 0.442 0 0 0 0 0.242 0.758 0 0 0 0 0 1 0"/></filter>
+<filter id="deu"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0 0.7 0.3 0 0 0 0 0.3 0.7 0 0 0 0 0 1 0"/></filter>
+<filter id="tri"><feColorMatrix type="matrix" values="0.95 0.05 0 0 0 0 0.433 0.567 0 0 0 0.475 0.525 0 0 0 0 0 1 0"/></filter>
+<filter id="ach"><feColorMatrix type="matrix" values="0.299 0.587 0.114 0 0 0.299 0.587 0.114 0 0 0.299 0.587 0.114 0 0 0 0 0 1 0"/></filter>
+</defs></svg>
+<script src="js/contrast.js"></script>
+<script src="js/app.js"></script>
+<script src="js/quiz.js"></script>
+</body>
+</html>

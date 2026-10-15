@@ -1,0 +1,7 @@
+{
+  "name": "reachable",
+  "version": "1.0.0",
+  "description": "Hands-on practice for WCAG 2.2 AA: keyboard, ARIA, contrast, zoom and audit reports.",
+  "license": "MIT",
+  "scripts": { "test": "node tests/contrast.test.js && node tests/wiring.test.js" }
+}
